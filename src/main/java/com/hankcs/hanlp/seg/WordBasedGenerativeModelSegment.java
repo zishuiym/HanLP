@@ -420,14 +420,12 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
 //        logger.trace("数字识别后：" + Graph.parseResult(linkedArray));
     }
 
-
     /**
      * 生成一元词网
      *
-     * @param sSentence 句子
-     * @return 词网
+     * @param wordNetStorage
      */
-    protected WordNet GenerateWordNet(final char[] sSentence, final WordNet wordNetStorage)
+    protected void GenerateWordNet(final WordNet wordNetStorage)
     {
         final char[] charArray = wordNetStorage.charArray;
 
@@ -438,20 +436,17 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
             wordNetStorage.add(searcher.begin + 1, new Vertex(new String(charArray, searcher.begin, searcher.length), searcher.value, searcher.index));
         }
         // 用户词典查询
-        if (config.useCustomDictionary)
-        {
-            CustomDictionary.parseText(charArray, new AhoCorasickDoubleArrayTrie.IHit<CoreDictionary.Attribute>()
-            {
-                @Override
-                public void hit(int begin, int end, CoreDictionary.Attribute value)
-                {
-                    wordNetStorage.add(begin + 1, new Vertex(new String(charArray, begin, end - begin), value));
-                }
-            });
-        }
+//        if (config.useCustomDictionary)
+//        {
+//            searcher = CustomDictionary.dat.getSearcher(charArray, 0);
+//            while (searcher.next())
+//            {
+//                wordNetStorage.add(searcher.begin + 1, new Vertex(new String(charArray, searcher.begin, searcher.length), searcher.value));
+//            }
+//        }
         // 原子分词，保证图连通
         LinkedList<Vertex>[] vertexes = wordNetStorage.getVertexes();
-        for (int i = 1; i < vertexes.length;)
+        for (int i = 1; i < vertexes.length; )
         {
             if (vertexes[i].isEmpty())
             {
@@ -465,7 +460,6 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
             }
             else i += vertexes[i].getLast().realWord.length();
         }
-        return wordNetStorage;
     }
 
     /**
@@ -498,7 +492,7 @@ public abstract class WordBasedGenerativeModelSegment extends Segment
                     {
                         if (
                                 ((termMain.nature == Nature.mq && smallVertex.hasNature(Nature.q)) ||
-                                smallVertex.realWord.length() > 1)
+                                        smallVertex.realWord.length() > 1)
                                         && smallVertex != vertex)
                         {
                             listIterator.add(smallVertex);

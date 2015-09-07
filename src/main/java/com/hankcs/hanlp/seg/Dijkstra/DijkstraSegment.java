@@ -35,7 +35,7 @@ public class DijkstraSegment extends WordBasedGenerativeModelSegment
         WordNet wordNetOptimum = new WordNet(sentence);
         WordNet wordNetAll = new WordNet(wordNetOptimum.charArray);
         ////////////////生成词网////////////////////
-        GenerateWordNet(null, wordNetAll);
+        GenerateWordNet(wordNetAll);
         ///////////////生成词图////////////////////
         Graph graph = GenerateBiGraph(wordNetAll);
         if (HanLP.Config.DEBUG)
@@ -44,6 +44,12 @@ public class DijkstraSegment extends WordBasedGenerativeModelSegment
         }
         List<Vertex> vertexList = dijkstra(graph);
 //        fixResultByRule(vertexList);
+
+        if (config.useCustomDictionary)
+        {
+            combineByCustomDictionary(vertexList);
+        }
+
         if (HanLP.Config.DEBUG)
         {
             System.out.println("粗分结果" + convert(vertexList, false));

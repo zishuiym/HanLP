@@ -59,11 +59,9 @@ HanLP: Han Language Processing
 
 ## 项目主页
 
-HanLP项目主页：http://hanlp.linrunsoft.com/
-
 HanLP下载地址：https://github.com/hankcs/HanLP/releases
 
-最新binary、文档都以项目主页为准。GitHub的说明为历史遗留，仅做参考。
+Solr5.x、Lucene5.x插件：https://github.com/hankcs/hanlp-solr-plugin
 
 ------
 
@@ -77,7 +75,7 @@ HanLP下载地址：https://github.com/hankcs/HanLP/releases
 <dependency>
     <groupId>com.hankcs</groupId>
     <artifactId>hanlp</artifactId>
-    <version>portable-1.2.2</version>
+    <version>portable-1.2.4</version>
 </dependency>
 ```
 
@@ -108,6 +106,7 @@ HanLP下载地址：https://github.com/hankcs/HanLP/releases
     └─model
 
 用户可以自行增删替换，如果不需要句法分析功能的话，随时可以删除model文件夹。
+- 模型跟词典没有绝对的区别，隐马模型被做成人人都可以编辑的词典形式，不代表它不是模型。
 
 #### 3、配置文件
 示例配置文件:[hanlp.properties](https://github.com/hankcs/HanLP/releases)
@@ -484,7 +483,7 @@ List<String> phraseList = HanLP.extractPhrase(text, 10);
 System.out.println(phraseList);
 ```
 - 说明
-  * 内部采用`MutualInformationEntropyPhraseExtractor`实现，用户可以直接调用`MutualInformationEntropyPhraseExtractor..extractPhrase(text, size)`。
+  * 内部采用`MutualInformationEntropyPhraseExtractor`实现，用户可以直接调用`MutualInformationEntropyPhraseExtractor.extractPhrase(text, size)`。
 - 算法详解
   * [《基于互信息和左右信息熵的短语提取识别》](http://www.hankcs.com/nlp/extraction-and-identification-of-mutual-information-about-the-phrase-based-on-information-entropy.html)
 
@@ -735,6 +734,7 @@ HanLP.Config.enableDebug();
 ```
 - 核心词性词频词典
   * 比如你在`data/dictionary/CoreNatureDictionary.txt`中发现了一个不是词的词，或者词性标注得明显不对，那么你可以修改它，然后删除缓存文件使其生效。
+  * 目前`CoreNatureDictionary.ngram.txt`的缓存依赖于`CoreNatureDictionary.txt`的缓存，修改了后者之后必须同步删除前者的缓存，否则可能出错
 - 核心二元文法词典
   * 二元文法词典`data/dictionary/CoreNatureDictionary.ngram.txt`储存的是两个词的接续，如果你发现不可能存在这种接续时，删掉即可。
   * 你也可以添加你认为合理的接续，但是这两个词必须同时在核心词典中才会生效。
